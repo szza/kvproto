@@ -37,6 +37,7 @@ message Request {
     bool is_trace_enabled = 9;
     // paging_size is 0 when it's disabled, otherwise, it should be a positive number.
     uint64 paging_size = 10;
+    uint64 priority = 11;
 }
 
 message Response {
@@ -62,6 +63,9 @@ message Response {
     // Contains the latest buckets version of the region.
     // Clients should query PD to update buckets in cache if its is stale.
     uint64 latest_buckets_version = 12;
+
+    uint64 virtual_time = 13;
+    uint64 cost = 14;
 }
 
 message RegionInfo {

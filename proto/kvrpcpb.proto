@@ -72,6 +72,18 @@ message ScanResponse {
     KeyError error = 3;
 }
 
+message PITRPhase1 {
+    uint64 start_version = 1;
+    uint64 tso = 2;
+}
+
+
+message PITRPhase2 {
+    uint64 start_version = 1;
+    uint64 tso = 2;
+    uint64 commit_version = 3;
+}
+
 // A prewrite is the first phase of writing to TiKV. It contains all data to be written in a transaction.
 // TiKV will write the data in a preliminary state. Data cannot be read until it has been committed.
 // The client should only commit a transaction once all prewrites succeed.
@@ -109,6 +121,8 @@ message PrewriteRequest {
     uint64 max_commit_ts = 14;
     // The level of assertion to use on this prewrte request.
     AssertionLevel assertion_level = 15;
+
+    uint64 priority = 16;
 }
 
 message PrewriteResponse {
@@ -124,6 +138,9 @@ message PrewriteResponse {
     uint64 one_pc_commit_ts = 4;
     // Execution details about the request processing.
     ExecDetailsV2 exec_details_v2 = 5;
+
+    uint64 virtual_time = 6;
+    uint64 cost = 7;
 }
 
 // Lock a set of keys to prepare to write to them.

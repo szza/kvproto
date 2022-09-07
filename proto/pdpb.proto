@@ -402,6 +402,8 @@ message RegionHeartbeatRequest {
     // cpu_usage is the CPU time usage of the leader region since the last heartbeat,
     // which is calculated by cpu_time_delta/heartbeat_reported_interval.
     uint64 cpu_usage = 17;
+    // has_pending_conf is used to check the region has pending config change.
+    bool has_pending_conf = 18;
 }
 
 message ChangePeer {

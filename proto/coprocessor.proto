@@ -37,6 +37,8 @@ message Request {
     bool is_trace_enabled = 9;
     // paging_size is 0 when it's disabled, otherwise, it should be a positive number.
     uint64 paging_size = 10;
+    // Only used in TiFlash, represents region is not on local machine and should read from another TiFlash node through coprocessor.
+    optional bool is_remote_read = 11;
 }
 
 message Response {

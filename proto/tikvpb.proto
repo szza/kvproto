@@ -94,6 +94,11 @@ service Tikv {
     rpc EstablishMPPConnection(mpp.EstablishMPPConnectionRequest) returns (stream mpp.MPPDataPacket) {}
     rpc IsAlive(mpp.IsAliveRequest) returns (mpp.IsAliveResponse) {}
 
+    // The build the disaggregated task
+    rpc EstablishDisaggregatedTask(mpp.EstablishDisaggregatedTaskRequest) returns (mpp.EstablishDisaggregatedTaskResponse) {}
+    // Exchange page data
+    rpc FetchDisaggregatedPages(mpp.FetchDisaggregatedPagesRequest) returns (stream mpp.PagesPacket) {}
+
     /// CheckLeader sends all information (includes region term and epoch) to other stores.
     /// Once a store receives a request, it checks term and epoch for each region, and sends the regions whose
     /// term and epoch match with local information in the store.

@@ -77,3 +77,62 @@ message Error {
 	int32 code = 1;
 	string msg = 2;
 }
+
+message EstablishDisaggregatedTaskRequest {
+    // start ts of a query
+    uint64 start_ts = 1;
+    // timestamp when start to execute query, used for
+    // TiFlash miniTSO schedule.
+    uint64 query_ts = 2;
+    // unique local query_id if tidb don't restart.
+    // So we can use query_ts + local_query_id +
+    // server_id to represent a global unique query.
+    uint64 local_query_id = 3;
+    int64 timeout = 4;
+    // target address of this task
+    string address = 5;
+    // The key ranges, Region meta that read node need to execute TableScan
+    repeated coprocessor.RegionInfo regions = 6;
+    int64 schema_ver = 7;
+    // Used for partition table scan
+    repeated coprocessor.TableRegions table_regions = 8;
+    // The encoded TableScan + Selection. The write node can use it
+    // to build the rough set filter.
+    bytes encoded_plan = 9;
+}
+
+message EstablishDisaggregatedTaskResponse {
+    Error error = 1;
+    // The read node needs to update its region cache about
+    // these regions
+    repeated metapb.Region retry_regions = 2;
+    // Write node maintains a snapshot with a lease time.
+    // Read node should read the delta pages
+    // (ColumnFileInMemory and ColumnFileTiny)
+    // along with this store_id and snapshot_id.
+    int64 store_id = 3;
+    int64 snapshot_id = 4;
+    // Serialized disaggregated segment
+    repeated bytes segments = 5;
+}
+
+message FetchDisaggregatedPagesRequest {
+    // The snapshot id to fetch pages 
+    int64 snapshot_id = 1;
+    // Renewed the lease for the snapshot_id. The unit is seconds.
+    uint64 lease = 2;
+    // It must be a subset of the delta_pages returned
+    // in EstablishDisaggregatedTaskResponse.segments
+    repeated uint64 pages = 3;
+}
+
+message PagesPacket {
+    Error error = 1;
+    // Serialized pages data
+    // * ColumnFilePersisted alone with its schema, page data, field offsets
+    // * ColumnFileInMemory alone with its serialized block
+    repeated bytes chunks = 2;
+    // Return tipb.SelectResponse.execution_summaries in the
+    // last packet
+    repeated bytes summaries = 3;
+}

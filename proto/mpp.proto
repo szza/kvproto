@@ -124,6 +124,8 @@ message FetchDisaggregatedPagesRequest {
     // It must be a subset of the delta_pages returned
     // in EstablishDisaggregatedTaskResponse.segments
     repeated uint64 pages = 3;
+    // target address of this task
+    string address = 4;
 }
 
 message PagesPacket {

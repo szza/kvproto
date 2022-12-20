@@ -78,27 +78,26 @@ message Error {
 	string msg = 2;
 }
 
+message DisaggregatedTaskMeta {
+    uint64 start_ts = 1; // start ts of a query
+    uint64 query_ts = 2; // timestamp when start to execute query, used for TiFlash miniTSO schedule.
+    uint64 local_query_id = 3; // unique local query_id if tidb don't restart. So we can use query_ts + local_query_id + server_id to represent a global unique query.
+    int64 task_id = 4; // if task id is -1 , it indicates a tidb task.
+    string executor_id = 5; // the exectuor id
+}
+
 message EstablishDisaggregatedTaskRequest {
-    // start ts of a query
-    uint64 start_ts = 1;
-    // timestamp when start to execute query, used for
-    // TiFlash miniTSO schedule.
-    uint64 query_ts = 2;
-    // unique local query_id if tidb don't restart.
-    // So we can use query_ts + local_query_id +
-    // server_id to represent a global unique query.
-    uint64 local_query_id = 3;
-    int64 timeout = 4;
-    // target address of this task
-    string address = 5;
+    DisaggregatedTaskMeta meta = 1;
+    string address = 2; // target address of this task.
+    int64 timeout = 3;
     // The key ranges, Region meta that read node need to execute TableScan
-    repeated coprocessor.RegionInfo regions = 6;
-    int64 schema_ver = 7;
+    repeated coprocessor.RegionInfo regions = 4;
+    int64 schema_ver = 5;
     // Used for partition table scan
-    repeated coprocessor.TableRegions table_regions = 8;
+    repeated coprocessor.TableRegions table_regions = 6;
     // The encoded TableScan + Selection. The write node can use it
     // to build the rough set filter.
-    bytes encoded_plan = 9;
+    bytes encoded_plan = 7;
 }
 
 message EstablishDisaggregatedTaskResponse {
@@ -118,7 +117,7 @@ message EstablishDisaggregatedTaskResponse {
 
 message FetchDisaggregatedPagesRequest {
     // The snapshot id to fetch pages 
-    int64 snapshot_id = 1;
+    DisaggregatedTaskMeta meta = 1;
     // Renewed the lease for the snapshot_id. The unit is seconds.
     uint64 lease = 2;
     // It must be a subset of the delta_pages returned

@@ -117,22 +117,27 @@ message EstablishDisaggregatedTaskResponse {
 message FetchDisaggregatedPagesRequest {
     // The snapshot id to fetch pages 
     DisaggregatedTaskMeta meta = 1;
-    // Renewed the lease for the snapshot_id. The unit is seconds.
-    uint64 lease = 2;
+    int64 table_id = 2;
+    uint64 segment_id = 3;
     // It must be a subset of the delta_pages returned
     // in EstablishDisaggregatedTaskResponse.segments
-    repeated uint64 pages = 3;
+    repeated uint64 pages = 4;
     // target address of this task
-    string address = 4;
+    string address = 5;
+    // Renewed the lease for the snapshot_id. The unit is seconds.
+    uint64 lease = 6;
 }
 
 message PagesPacket {
     Error error = 1;
-    // Serialized pages data
+
+    // Serialized column file data
     // * ColumnFilePersisted alone with its schema, page data, field offsets
+    repeated bytes pages = 2;
     // * ColumnFileInMemory alone with its serialized block
-    repeated bytes chunks = 2;
+    repeated bytes chunks = 3;
+
     // Return tipb.SelectResponse.execution_summaries in the
     // last packet
-    repeated bytes summaries = 3;
+    repeated bytes summaries = 4;
 }

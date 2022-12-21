@@ -110,9 +110,8 @@ message EstablishDisaggregatedTaskResponse {
     // (ColumnFileInMemory and ColumnFileTiny)
     // along with this store_id and snapshot_id.
     int64 store_id = 3;
-    int64 snapshot_id = 4;
-    // Serialized disaggregated segment
-    repeated bytes segments = 5;
+    // Serialized disaggregated tasks (per physical table)
+    repeated bytes tables = 4;
 }
 
 message FetchDisaggregatedPagesRequest {

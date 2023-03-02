@@ -82,3 +82,15 @@ message Error {
 	string msg = 2;
 	int64 mpp_version = 3;
 }
+
+message FillMaterializedViewRequest {
+    int64 base_db_id = 1;
+    int64 base_table_id = 2;
+    int64 mv_db_id = 3;
+    int64 mv_table_id = 4;
+	coprocessor.TableRegions table_regions = 5; 	
+}
+
+message FillMaterializedViewResponse {
+    string error = 1;
+}

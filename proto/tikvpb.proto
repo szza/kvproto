@@ -114,6 +114,8 @@ service Tikv {
     rpc Compact(kvrpcpb.CompactRequest) returns (kvrpcpb.CompactResponse);
     /// Get the information about history lock waiting from TiKV.
     rpc GetLockWaitHistory(kvrpcpb.GetLockWaitHistoryRequest) returns (kvrpcpb.GetLockWaitHistoryResponse);
+    /// 
+    rpc FillMaterializedView(mpp.FillMaterializedViewRequest) returns (mpp.FillMaterializedViewResponse);
 }
 
 message BatchCommandsRequest {
